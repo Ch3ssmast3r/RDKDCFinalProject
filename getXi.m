@@ -10,9 +10,9 @@ if theta == 0 %purely translational case. v is simply dependent on the p vector.
     v = p/norm(p);
     theta = norm(p);
 else %more general case. 
-    diff = R-transpose(R); %This is needed to calculate omega, using the general equation
+    difference = R-transpose(R); %This is needed to calculate omega, using the general equation
     %omega = (R-R^T)^V/(2sin(theta))
-    differenceV = [diff(3,2);diff(1,3);diff(2,1)];
+    differenceV = [difference(3,2);difference(1,3);difference(2,1)];
     omega = differenceV/(2*sin(theta));
     %next we compute v. the equation is summarized in this matrix (A) such
     %that vA = p.
@@ -20,6 +20,6 @@ else %more general case.
     A = eye(3)*theta + (1-cos(theta))*omegaHat +...
         (theta - sin(theta))*omegaHat*omegaHat;
     v = inv(A)*p; %solve for v
-en
+end
 xi = theta*[v;omega]; %we are interested in a non-normalized xi, which is why we...
 %multiply the unit twist by theta.
