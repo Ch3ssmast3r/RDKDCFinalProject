@@ -20,14 +20,14 @@ e2 = [0; 1; 0];
 e3 = [0; 0; 1];
 zeroVector = [0; 0; 0];
 w1 = e3; q1 = zeroVector;
-w2 = e2; q2 = L0*e3;
-w3 = e2; q3 = (L0 + L1)*e3;
-w4  = e2; q4 = (L0 + L1 + L2)*e3;
-w5 = e3; q5 = L3*e2;
-w6 = e2; q6 = (L0 + L1 + L2 + L4)*e3;
+w2 = e2; q2 = [0; 0; L0];
+w3 = e2; q3 = [L1; 0; L0];
+w4 = e2; q4 = [L1 + L2; 0; L0];
+w5 = - e3; q5 = [L1 + L2; L3; 0];
+w6 = e2; q6 = [L1 + L2; 0; L0 - L4];
 
-p0 = [0; L3 + L5; L0 + L1 + L2 + L4];
-R0 = ROTX(-pi/2);
+p0 = [L1 + L2; L3 + L5; L0-L4]; % this is the zero configuration
+R0 = ROTZ(pi)*ROTX(pi/2); % The zero configuration is rotated 
 gst0 = [R0, p0; 0, 0, 0, 1];
 
 xi1 = [cross(-w1,q1);w1];
@@ -42,7 +42,7 @@ q_matrix = [q1, q2, q3, q4, q5, q6]; %matrix with all the points q (not the angl
 XI = [xi1, xi2, xi3, xi4, xi5, xi6]; %matrix with all xi vectors
 
 %define a matrix containing all the matrix exponentials of the twists
-exp_twist_matrix = zeros(6,6,6);
+exp_twist_matrix = zeros(4,4,6);
 for i=1:6
     exp_twist_matrix(:,:,i) = EXPTWIST(w_matrix(:,i), q_matrix(:,i), thetas(i));
 end
@@ -63,9 +63,9 @@ for i=1:6
 
     %compute Ad^-1 of poe_i_to_n
     poe_i_to_n_inv = FINV(poe_i_to_n);
-    Ad_inv = adjoint(poe_i_to_n_inv);
+    Adj_inv = Adjoint(poe_i_to_n_inv);
 
-    Jb(:,i) = Ad_inv*XI(:,i);
+    Jb(:,i) = Adj_inv*XI(:,i);
 
 end
 
