@@ -1,0 +1,35 @@
+%% Part D. Testing getXi
+%The goal of this part is to choose some arbitrary homogeneous
+%transformations, calculate the twist using the getXi function, and then
+%exponentiate the twist to get the transformation that we started with. 
+
+%Pick some arbitrary transformations.
+R1 = ROTX(1)*ROTY(2);
+p1 = [2;1;0];
+
+R2 = ROTZ(pi)*ROTY(.5);
+p2 = [-1;0;1];
+
+R3 = ROTY(pi/4)*ROTX(pi/2)*ROTZ(1);
+p3 = [.5;.5;.5];
+
+%take R and p into homogeneous representation.
+g1 = RPtoG(R1,p1);
+g2 = RPtoG(R2,p2);
+g3 = RPtoG(R3,p3);
+
+%extract the twists using getxi
+xi1 = getXi(g1);
+xi2 = getXi(g2);
+xi3 = getXi(g3);
+
+%extract v and omega from each twist
+v1 = xi1(1:3);
+w1 = xi1(4:6);
+
+v2 = xi2(1:3);
+w2 = xi2(4:6);
+
+v3 = xi3(1:3);
+w3 = xi3(4:6);
+
