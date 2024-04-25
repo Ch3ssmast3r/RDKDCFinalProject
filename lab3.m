@@ -19,6 +19,7 @@ pause(10); % wait to give robot time to move
 ur5_g1 = ur5.get_current_transformation('base_link', 'tool0') % get transformation from RVIZ
 disp('The difference between the calculated and actual end effector pose is: ');
 disp(g1-ur5_g1); % compute the difference between RVIZ and the expected position
+pause(10); % give time to look at results
 
 % this process is repeated 6 times to test each joint and the overall
 % forward kinematics. 
@@ -31,6 +32,7 @@ pause(10);
 ur5_g2 = ur5.get_current_transformation('base_link', 'tool0')
 disp('The difference between the calculated and actual end effector pose is: ');
 disp(g2-ur5_g2);
+pause(10);
 
 thetas = [pi/2; -pi/2; 0; 0; 0; 0];
 g3 = ur5FwdKin(thetas)
@@ -41,6 +43,7 @@ pause(15);
 ur5_g3 = ur5.get_current_transformation('base_link', 'tool0')
 disp('The difference between the calculated and actual end effector pose is: ');
 disp(g3-ur5_g3);
+pause(10);
 
 thetas = [pi/2; -pi/2; pi/6; 0; 0; 0];
 g5 = ur5FwdKin(thetas)
@@ -51,6 +54,7 @@ pause(15);
 ur5_g4 = ur5.get_current_transformation('base_link', 'tool0')
 disp('The difference between the calculated and actual end effector pose is: ');
 disp(g5-ur5_g4);
+pause(10);
 
 thetas = [pi/2; -pi/2; pi/6; pi/4; 0; 0];
 g5 = ur5FwdKin(thetas)
@@ -61,6 +65,7 @@ pause(15);
 ur5_g5 = ur5.get_current_transformation('base_link', 'tool0')
 disp('The difference between the calculated and actual end effector pose is: ');
 disp(g5-ur5_g5);
+pause(10);
 
 thetas = [pi/2; -pi/2; pi/6; pi/4; pi/3; 0];
 g6 = ur5FwdKin(thetas)
@@ -71,6 +76,7 @@ pause(15);
 ur5_g6 = ur5.get_current_transformation('base_link', 'tool0')
 disp('The difference between the calculated and actual end effector pose is: ');
 disp(g6-ur5_g6);
+pause(10);
 
 thetas = [pi/2; -pi/2; pi/6; pi/4; pi/3; pi/4];
 g7 = ur5FwdKin(thetas)
@@ -81,6 +87,7 @@ pause(15);
 ur5_g7 = ur5.get_current_transformation('base_link', 'tool0')
 disp('The difference between the calculated and actual end effector pose is: ');
 disp(g7-ur5_g7);
+pause(10);
 
 thetas = theta_home;
 g = ur5FwdKin(thetas)
@@ -91,6 +98,7 @@ pause(15);
 ur5_g = ur5.get_current_transformation('base_link', 'tool0')
 disp('The difference between the calculated and actual end effector pose is: ');
 disp(g-ur5_g);
+pause(10);
 
 %% Part B. Testing ur5BodyJacobian
 % The goal of this test is to determine if the ur5BodyJacobian function
@@ -241,7 +249,7 @@ fprintf('The final positional error is %.2f cm\n', final_error)
 
 % Part E Test 2. Showing that the command terminates if we are near a
 % singularity. 
-thetas = [pi/2; -pi/2; -pi/4; pi/4; pi/3; pi/4];
+thetas = [pi/2; -pi/2; 0; pi/4; pi/3; pi/4];
 gdesired = ur5FwdKin(thetas);
 K = 1.3;
 final_error = ur5RRcontrol(gdesired, K, ur5);
