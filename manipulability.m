@@ -8,13 +8,13 @@ function[mu] = manipulability(J,measure)
     %J is a 6x6 matrix, measure is a string that must be
     %'sigmamin','detjac',or'invcond'
     
-    if (ismember(measure,'sigmamin')||ismember(measure,'invcond'))
+    if (ismember(measure,'sigmamin')|ismember(measure,'invcond'))
         %the "ismember" function checks whether the variable measure contains the string 'sigmamin'.
         %for both 'sigmamin' and 'invcondition', we must compute the
         %singular values of J.
        
         sigmas = svd(J); %array of singular values
-        sigmaMin = min(simgas); %smallest singular value
+        sigmaMin = min(sigmas); %smallest singular value
         mu = sigmaMin; %this is our output for the measurement 'sigmamin'.
         
         if ismember(measure,'invcond') %this measure takes the ratio of the min. and max. singular values.
