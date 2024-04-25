@@ -235,14 +235,14 @@ ur5.move_joints(starting_config, 10);
 pause(10);
 thetas = [pi/2; -pi/2; pi/6; pi/4; pi/3; pi/4];
 gdesired = ur5FwdKin(thetas);
-K = 1;
-final_error = ur5RRcontrol(gdesired, K, ur5)
-
-
+K = 1.3;
+final_error = ur5RRcontrol(gdesired, K, ur5);
+fprintf('The final positional error is %.2f cm\n', final_error)
 
 % Part E Test 2. Showing that the command terminates if we are near a
 % singularity. 
 thetas = [pi/2; -pi/2; -pi/4; pi/4; pi/3; pi/4];
 gdesired = ur5FwdKin(thetas);
-K = .75;
-final_error = ur5RRcontrol(gdesired, K, ur5)
+K = 1.3;
+final_error = ur5RRcontrol(gdesired, K, ur5);
+fprintf('The final positional error is %.2f cm\n', final_error)
