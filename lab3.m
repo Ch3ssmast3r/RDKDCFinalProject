@@ -1,13 +1,14 @@
+
+%% UR5 interface
+ur5 = ur5_interface();
+theta_home = [0; -pi/2; 0; -pi/2; 0; 0];
+
 %% Question 3A
 % 
 % The purpose of this program is to test the ur5FwdKin method and see if 
 % it outputs the right results
 %
 % Written by Aabhas Jain
-
-ur5 = ur5_interface();
-theta_home = [0; -pi/2; 0; -pi/2; 0; 0];
-
 
 thetas = [0;0;0;0;0;0]; % define thetas
 g1 = ur5FwdKin(thetas) % compute forward kinematics
@@ -125,6 +126,50 @@ err_norm = norm(Japprox-Jb);
 disp('norm(Jappox-J) = ')
 disp(err_norm)
      
+%% Part C - Testing manipulability measures
+%This should be added to main lab3 code later.
+
+%This part will calculate the manipulability near a singularity, more
+%specifically when theta3 = 0.
+
+q = [pi/3;-pi/3;NaN;pi/4;pi/6;-pi/6]; %joint space variables. Theta 3 will be left blank for now.
+theta3 = (-pi/4:.01:pi/4); %array of values of theta3 near the singularity, theta3 = 0
+
+Q = zeros(6,length(theta3)); %pre-define these arrays
+muSigmaMin = zeros(length(theta3),1);
+muDetJac = zeros(length(theta3),1);
+muInvCond = zeros(length(theta3),1);
+for i = 1:length(theta3) %we will calulate manipulability for each value of theta3.
+    Q(:,i)=q; %start by placing the other 5 joint space variables.
+    Q(3,i)=theta3(i); %fill in theta3
+    
+    %calculate the Jacobian for each qi
+    J = ur5BodyJacobian(Q(:,i));
+    
+    %calculate each of the 3 manipulability measures: 'sigmamin','detjac',or'invcond'
+    muSigmaMin(i) = manipulability(J,'sigmamin');
+    muDetJac(i) = manipulability(J,'detjac');
+    muInvCond(i) = manipulability(J,'invcond');
+end
+
+%generate plots of manipulability, mu, vs theta.
+figure(1)
+plot(theta3,muSigmaMin)
+title("Singularity: Minimum Singular value")
+xlabel('Theta3, (rad)')
+ylabel('Manipulability, mu')
+
+figure(2)
+plot(theta3,muDetJac)
+title("Signularity: Determinant of Jacobian")
+xlabel('Theta3 (rad)')
+ylabel('Manipulability, mu')
+
+figure(3)
+plot(theta3,muInvCond)
+title("Singularity: Inverse Condition")
+xlabel('Theta3 (rad)')
+ylabel('Manipulability, mu')
 
 %% Part D. Testing getXi
 %The goal of this part is to choose some arbitrary homogeneous
@@ -174,3 +219,30 @@ gThree = expm(xiHat3);
 error1 = g1-gOne
 error2 = g2-gTwo
 error3 = g3-gThree
+
+%% Part E. testing Resolved Rate Controller. 
+% The goal of this test is to determine whether the resolved rate
+% controller works or not. This will be done by defining a desired
+% configuration and a gain and then using the resolved rate controller
+% command to show that the robot moves to the goal. A second test will be
+% conducted to show that the robot fails when we are near a singularity.
+ur5 = ur5_interface();
+starting_config = [0; 0; -pi/4; 0; pi/6; 0];
+starting_frame = ur5FwdKin(starting_config);
+fwdKinToolFrame = tf_frame('base_link', 'fwdKinToolFrame', eye(4));
+fwdKinToolFrame.move_frame('base_link', starting_frame);
+ur5.move_joints(starting_config, 10);
+pause(10);
+thetas = [pi/2; -pi/2; pi/6; pi/4; pi/3; pi/4];
+gdesired = ur5FwdKin(thetas);
+K = 1;
+final_error = ur5RRcontrol(gdesired, K, ur5)
+
+
+
+% Part E Test 2. Showing that the command terminates if we are near a
+% singularity. 
+thetas = [pi/2; -pi/2; -pi/4; pi/4; pi/3; pi/4];
+gdesired = ur5FwdKin(thetas);
+K = .75;
+final_error = ur5RRcontrol(gdesired, K, ur5)
