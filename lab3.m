@@ -5,7 +5,7 @@
 %
 % Written by Aabhas Jain
 
-ur5=ur5_interface();
+ur5 = ur5_interface();
 theta_home = [0; -pi/2; 0; -pi/2; 0; 0];
 
 
@@ -91,6 +91,40 @@ ur5_g = ur5.get_current_transformation('base_link', 'tool0')
 disp('The difference between the calculated and actual end effector pose is: ');
 disp(g-ur5_g);
 
+%% Part B. Testing ur5BodyJacobian
+% The goal of this test is to determine if the ur5BodyJacobian function
+% works as intended. To do so, we compute the central difference
+% approximate to the Jacobian and see if the error between the Approximate
+% Jacobian and actual Jacobian is small. 
+
+q = rand(6,1)*2*pi - pi; % joint angles
+Jb = ur5BodyJacobian(q); %calculate Body Jocabian
+
+%define e_i's
+e1 = [1 0 0 0 0 0]'; e2 = [0 1 0 0 0 0]'; e3 = [0 0 1 0 0 0]'; 
+e4 = [0 0 0 1 0 0]'; e5 = [0 0 0 0 1 0]'; e6 = [0 0 0 0 0 1]';
+
+e = [e1, e2, e3, e4, e5, e6];
+
+eps = 0.0001; %slight offset
+
+gst = ur5FwdKin(q);
+gst_inv = FINV(gst);
+
+Japprox = zeros(6); %initialize Jacobian approximation
+
+for i = 1:6
+    upper = ur5FwdKin(q+eps*e(:,i));
+    lower = ur5FwdKin(q-eps*e(:,i));
+    dg_dqi = (1/(2*eps))*(upper-lower);
+    Japprox(:,i) = twistify(gst_inv*dg_dqi);
+end
+
+%compute matrix norm of the error btn Japprox and Jb
+err_norm = norm(Japprox-Jb);
+disp('norm(Jappox-J) = ')
+disp(err_norm)
+     
 
 %% Part D. Testing getXi
 %The goal of this part is to choose some arbitrary homogeneous
