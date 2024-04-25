@@ -216,9 +216,9 @@ gOne = expm(xiHat1);
 gTwo = expm(xiHat2);
 gThree = expm(xiHat3);
 
-error1 = g1-gOne
-error2 = g2-gTwo
-error3 = g3-gThree
+error1 = norm(g1-gOne)
+error2 = norm(g2-gTwo)
+error3 = norm(g3-gThree)
 
 %% Part E. testing Resolved Rate Controller. 
 % The goal of this test is to determine whether the resolved rate
