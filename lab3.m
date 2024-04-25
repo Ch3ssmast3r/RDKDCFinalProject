@@ -107,7 +107,7 @@ e4 = [0 0 0 1 0 0]'; e5 = [0 0 0 0 1 0]'; e6 = [0 0 0 0 0 1]';
 
 e = [e1, e2, e3, e4, e5, e6];
 
-eps = 0.0001; %slight offset
+eps = 0.00001; %slight offset
 
 gst = ur5FwdKin(q);
 gst_inv = FINV(gst);
