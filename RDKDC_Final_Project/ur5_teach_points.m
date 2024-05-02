@@ -12,7 +12,7 @@ function frames = ur5_teach_points(ur5)
     close all;
     theta_2 = ur5.get_current_joints();
     disp('Thank you!');
-    frames(:,:, 1) = ur5FwdKin(theta_1);
+    frames(:,:, 1) = ur5FwdKin(theta_1); %this will call FwdKinDH
     frames(:,:, 2) = ur5FwdKin(theta_2);
     close all;
 end
