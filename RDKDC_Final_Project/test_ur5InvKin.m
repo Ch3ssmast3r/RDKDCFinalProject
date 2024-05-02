@@ -12,7 +12,7 @@ for i = 1:n_tests
     q = (rand(6,1) * 2*pi) - pi;
     
     % calculate the tool0 pose using your forward kinematics
-    gBaseTool = ur5FwdKin(q);
+    gBaseTool = ur5FwdKinDH(q);
     
     % calculate the set of solution using ur5InvKin
     q_sol = ur5InvKin(gBaseTool);
