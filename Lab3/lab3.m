@@ -218,7 +218,7 @@ w3 = xi3(4:6);
 xiHat3 = [SKEW3(w3),v3;0,0,0,0];
 
 %calculate g again from the twists, then see if they match. This will be
-%done using the function "XiToG" which takes a twist and finds the
+%done using the function expm which takes a twist and finds the
 %homogeneous transformation.
 gOne = expm(xiHat1);
 gTwo = expm(xiHat2);
