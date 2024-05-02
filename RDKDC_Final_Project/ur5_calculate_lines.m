@@ -98,4 +98,5 @@ function frames = ur5_calculate_lines(gstart,gfinish)
         frames(:,:,3) = g3;
         frames(:,:,4) = g4;
     end
+        close all
 end

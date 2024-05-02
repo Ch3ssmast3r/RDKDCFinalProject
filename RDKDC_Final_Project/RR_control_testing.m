@@ -3,26 +3,31 @@
 % controller for moving between the two provided frames. 
 
 ur5 = ur5_interface();
-starting_config = [0; -pi/2; pi/2; 0; pi/6; 0];
-theta1 = [0; -pi/2; -pi/2; 0; pi/6; 0];
+%ur5.switch_to_ros_control();
+% starting_config = [1.1343; -0.7203; 0.8921; 1.3989; 1.5708; -2.0072];
+ starting_config = [0.9556; -1.5709; 2.1994; -2.2750; -1.5708; 0]
 g1 = ur5FwdKin(theta1);
 %starting_frame = ur5FwdKin(starting_config);
-gst1 = [0 -1 0 0.25;
+gst1 = [0 -1 0 0.2;
         -1 0 0 0.60;
-        0 0 -1 0.22;
+        0 0 -1 0.05;
         0 0 0 1];
-gst2 = [0 -1 0 0.40;
+gst2 = [0 -1 0 0.35;
         -1 0 0 0.60;
-        0 0 -1 0.22;
+        0 0 -1 0.05;
         0 0 0 1];
-%fwdKinToolFrame.move_frame('base_link', starting_frame);
-ur5.move_joints(starting_config, 10);
-pause(1);
+disp('Moving to home');
+ur5.move_joints(ur5.home, 20);
+pause(20)
+disp('Moving to starting config');
+ur5.move_joints(starting_config, 20);
+pause(20);
 disp('Moving to gst1');
-K = 0.8;
+K = 3;
 fwdKinToolFrame = tf_frame('base_link', 'fwdKinToolFrame', eye(4));
-fwdKinToolFrame.move_frame('base_link', g1);
-move_to_gst1 = ur5RRcontrol(g1, K, ur5)
+fwdKinToolFrame.move_frame('base_link', gst1);
+move_to_gst1 = ur5RRcontrol(gst1, K, ur5)
+pause(5)
 disp('Moving to gst2');
 fwdKinToolFrame = tf_frame('base_link', 'fwdKinToolFrame', eye(4));
 fwdKinToolFrame.move_frame('base_link', gst2);

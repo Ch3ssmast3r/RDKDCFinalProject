@@ -5,7 +5,7 @@ theta = acos((trace(R)-1)/2); %theta is dependent upon the rotation matrix
 p = g(1:3,4); %extract the position vector from g
 
 %We must account for two cases: 1) purely translational and 2) general case
-if theta == 0 %purely translational case. v is simply dependent on the p vector.
+if abs(theta) < 0.0001 %purely translational case. v is simply dependent on the p vector.
     omega = [0;0;0];
     v = p/norm(p);
     theta = norm(p);
