@@ -4,9 +4,12 @@
 ur5 = ur5_interface();
 
 starting_config = [0.8996; -1.7011; 2.4081; -2.2778; -1.5627; 0.1232];
-ur5.switch_to_ros_control()
-ur5.move_joints(starting_config, 15);
-pause(15);
+ur5.switch_to_ros_control();
+if (norm(ur5.get_current_joints() - starting_config) > 0.1)
+    disp('Moving to starting_config');
+    ur5.move_joints(starting_config, 15);
+    pause(15)
+end
 % first teach the points we want to go to. 
 ur5.switch_to_pendant_control();
 frames = ur5_teach_points(ur5);
@@ -23,14 +26,19 @@ gst2 = target_frames(:,:,2);
 gst3 = target_frames(:,:,3);
 gst4 = target_frames(:,:,4);
 
-K = 1.5;
+disp('moving up');
+up_displacement = zeros(4);
+up_displacement(3, 4) = 0.05;
+ur5FwdKinDH(ur5.get_current_joints);
+up_frame = ur5FwdKinDH(ur5.get_current_joints()) + up_displacement;
+move_to_up_frame = ur5RRcontrol(up_frame, K, ur5);
+
 disp('moving to start location');
 up_displacement = zeros(4);
 up_displacement(3, 4) = 0.05;
 up_frame = gst1 + up_displacement;
 move_to_up_frame = ur5RRcontrol(up_frame, K, ur5);
 
-K = 5;
 disp('Moving to gst1');
 pen_frame = tf_frame('base_link', 'pen_frame', eye(4));
 pen_frame.move_frame('base_link', gst1);
@@ -70,3 +78,4 @@ move_to_up_frame = ur5RRcontrol(up_frame, K, ur5);
 
 ur5.move_joints(starting_config, 15);
 pause(15);
+disp('Program complete!')
