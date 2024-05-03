@@ -17,7 +17,7 @@
 % failure then it should be the final positional error in cm.
 
 function finalerr = ur5RRcontrol(gdesired, K, ur5)
-k_max = 15;
+k_max = 20;
 T_step = 0.05;
 v_abs_error = 0.5 / 100;
 w_abs_error = 1 * pi/180;
@@ -41,12 +41,13 @@ while (norm_v_k > v_abs_error || norm_w_k > w_abs_error && ABORT ~= 1)
     norm_v_k = norm(v_k);
     norm_w_k = norm(w_k);
     inv_cond = manipulability(J_bqk, 'invcond');
-    K = 4/norm(J_bqk\xi_error);
+    K = 2/norm(J_bqk\xi_error);
+    fprintf('K: %6.2f \n', K);
     if (K > k_max) 
         K = k_max;
+        fprintf('K: %6.2f \n', K);
     end
-            fprintf('K: %6.2f \n', K);
-
+    
     if (inv_cond < 0.002)
         ABORT = 1;
         break;

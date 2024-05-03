@@ -2,25 +2,34 @@
 %
 % Written by Aabhas Jain
 
-% Inputs:
-% gdesired: a homogenous trnasform that is the desired end-effector
-% pose, gst
-% K: the gain on the controller
-% ur5: the ur5 interface object.
+% Inputs: 
+    % gdesired: a homogenous trnasform that is the desired end-effector
+    % pose, gst
+    % K: the gain on the controller
+    % ur5: the ur5 interface object.
 
 % Purpose:
-% implement a discrete-time resolved-rate control systme. It iterataively
-% implements the Resolved-Rate control system discussed in class:
-% q_(k+1) = q_k - K*T_step*[Jb(q_k)]^-1*xi_k
-% Outputs:
+    % implement a discrete-time resolved-rate control systme. It iterataively
+    % implements the Resolved-Rate control system discussed in class:
+    % q_(k+1) = q_k - K*T_step*[Jb(q_k)]^-1*xi_k
+% Outputs: 
 % finalerr: this should be -1 if there is a failure. if there is no
 % failure then it should be the final positional error in cm.
 
-function finalerr = ur5RRcontrol(gdesired, K, ur5)
-k_max = 15;
+% What i want to do in this function is compute the K automatically so that
+% we move as fast as possible. Some ways to do this are to use the norm of
+% the error to inform the k. we already compute the v_k and w_k. if we
+% combine these two together and then make our K based off of that, that
+% could be faster. 
+
+
+% Another way to compute what our K should be is to first calculate the
+% current end-effector velocity and then set our K such that the
+% end-effector velocity 
+function finalerr = ur5RRcontrol(gdesired, ur5)
 T_step = 0.05;
-v_abs_error = 0.5 / 100;
-w_abs_error = 1 * pi/180;
+v_abs_error = 1 / 100;
+w_abs_error = 4 * pi/180;
 q_k = ur5.get_current_joints;
 J_bqk = ur5BodyJacobian(q_k);
 
@@ -38,20 +47,15 @@ while (norm_v_k > v_abs_error || norm_w_k > w_abs_error && ABORT ~= 1)
     xi_error = getXi(FINV(gdesired)*ur5FwdKinDH(q_k));
     v_k = xi_error(1:3);
     w_k = xi_error(4:6);
-    norm_v_k = norm(v_k);
-    norm_w_k = norm(w_k);
+    norm_v_k = norm(v_k)
+    norm_w_k = norm(w_k)
     inv_cond = manipulability(J_bqk, 'invcond');
-    K = 4/norm(J_bqk\xi_error);
-    if (K > k_max) 
-        K = k_max;
-    end
-            fprintf('K: %6.2f \n', K);
 
     if (inv_cond < 0.002)
         ABORT = 1;
         break;
     end
-    q_k_new = q_k - K*T_step*(J_bqk\xi_error);
+    q_k_new = q_k - K*T_step*inv(J_bqk)*xi_error;
     g_new = ur5FwdKinDH(q_k_new);
     fwdKinToolFrame = tf_frame('base_link', 'fwdKinToolFrame', eye(4));
     fwdKinToolFrame.move_frame('base_link', g_new);

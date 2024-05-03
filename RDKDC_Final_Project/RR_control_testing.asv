@@ -18,12 +18,12 @@ gst2 = [0 -1 0 0.35;
         0 0 0 1];
 if (norm(ur5.get_current_joints() - ur5.home()) > 0.1)
     disp('Moving to home');
-    ur5.move_joints(ur5.home, 10);
-pause(10)
+    ur5.move_joints(ur5.home, 12);
+pause(12)
 end
 disp('Moving to starting config');
-ur5.move_joints(starting_config, 10);
-pause(10);
+ur5.move_joints(starting_config, 8);
+pause(8);
 disp('Moving to gst1');
 K = 3;
 pen_frame = tf_frame('base_link', 'pen_frame', eye(4));

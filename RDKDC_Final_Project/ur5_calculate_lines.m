@@ -18,7 +18,7 @@ function frames = ur5_calculate_lines(gstart,gfinish)
     %Rz = 135
     %the order is Rzyx
     
-    R = ROTZ(3*pi/4)*ROTY(0)*ROTX(-pi);
+    R = ROTZ(3*pi/4 + pi)*ROTY(0)*ROTX(-pi);
     
     %extract the vectors from the homogeneous frames
     v1 = gstart(1:3,4); 
