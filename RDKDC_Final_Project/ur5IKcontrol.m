@@ -48,7 +48,6 @@ q(:,1) = q_initial;
 
 for i = 2:length(s)
     g_s(:,:,i) = [R_final, p_s(:,i); zeros(1,3), 1];
-    disp(g_s(:,:,i))
 
     %use Inverse Kinematics to get the joint angles
     thetas(:,:,i) = ur5InvKin(g_s(:,:,i));
