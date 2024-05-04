@@ -1,8 +1,6 @@
 %% RDKDC Final Project - Teach and Move
 % Written by Aabhas Jain 
-% edited by James Kaluna
-
-%somehow doesn't work with ur5FwdKinDH
+%edits by James Kaluna
 %% Calculate Robot points
 ur5 = ur5_interface();
 
@@ -46,38 +44,38 @@ K = 5;
 disp('Moving to gst1');
 pen_frame = tf_frame('base_link', 'pen_frame', eye(4));
 pen_frame.move_frame('base_link', gst1);
-move_to_gst1 = ur5IKcontrol(gst1, ur5);
+move_to_gst1 = ur5IKcontrol(gst1, ur5)
 
 disp('Moving to gst2');
 pen_frame = tf_frame('base_link', 'pen_frame', eye(4));
 pen_frame.move_frame('base_link', gst2);
-move_to_gst2 = ur5IKcontrol(gst2, ur5);
+move_to_gst2 = ur5IKcontrol(gst2, ur5)
 
 disp('moving up');
 up_displacement = zeros(4);
 up_displacement(3, 4) = 0.05;
-ur5FwdKin(ur5.get_current_joints);
-up_frame = ur5FwdKin(ur5.get_current_joints()) + up_displacement;
+ur5FwdKinDH(ur5.get_current_joints);
+up_frame = ur5FwdKinDH(ur5.get_current_joints()) + up_displacement;
 move_to_up_frame = ur5IKcontrol(up_frame, ur5);
 
 disp('moving to next point')
 next_frame = target_frames(:,:,3);
 next_frame(3, 4) = up_frame(3,4);
 move_to_next_frame = ur5IKcontrol(next_frame, ur5);
-
+ 
 disp('Moving to gst3');
 pen_frame = tf_frame('base_link', 'pen_frame', eye(4));
 pen_frame.move_frame('base_link', gst3);
-move_to_gst3 = ur5IKcontrol(gst3, ur5);
+move_to_gst3 = ur5IKcontrol(gst3, ur5)
 disp('Moving to gst4');
 pen_frame = tf_frame('base_link', 'pen_frame', eye(4));
 pen_frame.move_frame('base_link', gst4);
-move_to_gst4 = ur5IKcontrol(gst4, ur5);
+move_to_gst4 = ur5IKcontrol(gst4, ur5)
 
 disp('done, moving to starting config');
 up_displacement = zeros(4);
 up_displacement(3, 4) = 0.05;
-up_frame = ur5FwdKin(ur5.get_current_joints()) + up_displacement;
+up_frame = ur5FwdKinDH(ur5.get_current_joints()) + up_displacement;
 move_to_up_frame = ur5IKcontrol(up_frame, ur5);
 
 ur5.move_joints(starting_config, 15);

@@ -1,6 +1,7 @@
 %% RDKDC Final Project - ur5RRcontrol
 %
 % Written by Aabhas Jain
+% Edited by Andrew Palacio
 
 % Inputs:
 % gdesired: a homogenous trnasform that is the desired end-effector
@@ -16,12 +17,15 @@
 % finalerr: this should be -1 if there is a failure. if there is no
 % failure then it should be the final positional error in cm.
 
+%So far, the simulation worked at a bare minimum by fixing K at 55.
+
 function finalerr = ur5TJcontrol(gdesired, K, ur5)
-k_max = 60;
-K = 20;
-T_step = 0.025;
-v_abs_error = 0.5 / 100;
-w_abs_error = 1 * pi/180;
+k_min = 20;
+k_max = 75;
+K = 45;
+T_step = 0.01;
+v_abs_error = 2 / 100;
+w_abs_error = 3 * pi/180;
 q_k = ur5.get_current_joints;
 J_bqk = ur5BodyJacobian(q_k);
 
@@ -42,9 +46,24 @@ while (norm_v_k > v_abs_error || norm_w_k > w_abs_error && ABORT ~= 1)
     norm_v_k = norm(v_k);
     norm_w_k = norm(w_k);
     inv_cond = manipulability(J_bqk, 'invcond');
-    K_rr = 4/norm(J_bqk\xi_error);
-    % K = .75/norm(transpose(J_bqk)*xi_error);
-    % fprintf('K: %6.2f, K_rr: %6.2f \n', K, K_rr);
+    % K_rr = 4/norm(J_bqk\xi_error);
+    term = transpose(J_bqk)*xi_error;
+    % if norm_v_k > .1
+    %     % K = 8/norm_v_k;
+    %     K = 45;
+    % else
+    %     K = 65;
+    % end
+    % K = 100 - 250*norm_v_k; %finding K using a linear function of error
+    % K = 8/norm_v_k;
+    % fprintf('K: %6.2f \n', K);
+    % fprintf('Determinant: %6.4f \n', det(J_bqk))
+    % fprintf('Error: %6.4f \n', norm_v_k);
+    % fprintf('Term: %6.2f \n', term)
+    if (K < k_min)
+        K = k_min;
+        fprintf('K: %6.2f \n', K);
+    end
     if (K > k_max) 
         K = k_max;
         fprintf('K: %6.2f \n', K);

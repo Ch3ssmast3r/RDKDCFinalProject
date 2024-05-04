@@ -2,6 +2,7 @@ function[xi] = getXi(g)
 %g is the homogeneous transformation matrix in SE(3)
 R = g(1:3,1:3); %extract the rotation matrix from g
 theta = acos((trace(R)-1)/2); %theta is dependent upon the rotation matrix
+% fprintf('Theta: %6.4f \n',theta);
 p = g(1:3,4); %extract the position vector from g
 
 %We must account for two cases: 1) purely translational and 2) general case

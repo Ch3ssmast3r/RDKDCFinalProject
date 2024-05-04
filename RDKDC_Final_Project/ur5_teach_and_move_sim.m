@@ -32,14 +32,14 @@ gst2 = target_frames(:,:,2);
 gst3 = target_frames(:,:,3);
 gst4 = target_frames(:,:,4);
 
-K = 1.5;
+% K = 30;
 disp('moving to start location');
 up_displacement = zeros(4);
 up_displacement(3, 4) = 0.05;
 up_frame = gst1 + up_displacement;
 move_to_up_frame = ur5TJcontrol(up_frame, K, ur5);
 
-K = 5;
+% K = 50;
 disp('Moving to gst1');
 pen_frame = tf_frame('base_link', 'pen_frame', eye(4));
 pen_frame.move_frame('base_link', gst1);
