@@ -56,7 +56,7 @@ move_to_gst2 = ur5IKcontrol(gst2, ur5);
 disp('moving up');
 up_displacement = zeros(4);
 up_displacement(3, 4) = 0.05;
-ur5FwdKin(ur5.get_current_joints)
+ur5FwdKin(ur5.get_current_joints);
 up_frame = ur5FwdKin(ur5.get_current_joints()) + up_displacement;
 move_to_up_frame = ur5IKcontrol(up_frame, ur5);
 
