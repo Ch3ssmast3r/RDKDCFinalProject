@@ -20,7 +20,7 @@ elseif acosinput <= -1
 
     end
     
-    so3 = VecToso3(pi * w);
+    so3 = SKEW3(pi * w);
 
 else
 	theta = acos(acosinput);
