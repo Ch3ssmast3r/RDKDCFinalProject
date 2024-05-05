@@ -1,5 +1,5 @@
 
-function finalerr = ur5IKcontrol(gdesired, ur5)
+function finalerr = ur5IKcontrolnew(gdesired, ur5)
 % Move robot along desired Cartesian path by finding corresponding path in joint space
 % uses IK to find joint angles from the cartesian space (SE(3))
 
