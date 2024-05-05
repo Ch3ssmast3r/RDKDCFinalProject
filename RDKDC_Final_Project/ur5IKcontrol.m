@@ -6,7 +6,7 @@ function finalerr = ur5IKcontrol(gdesired, ur5)
 
 %get initial pose
 q_initial = ur5.get_current_joints; %current joint angles
-g_initial = ur5FwdKinDH(q_initial);
+g_initial = ur5FwdKin(q_initial);
 
 %% generate a straight line Cartesian path
 
@@ -41,12 +41,12 @@ g_s(:,:,1) = g_initial;
 %% Use Inverse Kinematics to get joint angles and move UR5 to the 'best' solution
 
 thetas = zeros(6, 8, length(s)); %initialize joint angle matrices
-q = q_initial;
-%q = zeros(6, length(s)); %joint angle vectors
-%q(:,1) = q_initial; 
+%q = q_initial;
+q = zeros(6, length(s)); %joint angle vectors
+q(:,1) = q_initial; 
 
 for i = 2:length(s)
-    g_s(:,:,i) = [R_final, p_s(i); zeros(1,3), 1];
+    g_s(:,:,i) = [R_final, p_s(:,i); zeros(1,3), 1];
 
     %use Inverse Kinematics to get the joint angles
     thetas(:,:,i) = ur5InvKin(g_s(:,:,i));
@@ -54,17 +54,17 @@ for i = 2:length(s)
     %find the best theta by comparing with previous joint angles. Choose the closest 
     %More - avoid solutions with singulaties or joint (velocity) limits
     [min_err, index] = min(vecnorm(thetas(:,:,i) - q(:,i-1)));
-    q = thetas(:,index,i);
+    q(:,i) = thetas(:,index,i);
     
     %move frame
     fwdKinToolFrame = tf_frame('base_link', 'fwdKinToolFrame', eye(4));
     fwdKinToolFrame.move_frame('base_link', g_s(:,:,i));
 
     %move ur5
-    ur5.move_joints(q, 0.5);
-    pause(0.5)
+    ur5.move_joints(q(:,i), 0.04);
+    pause(0.04)
 end
 
-g_error = gdesired - ur5FwdKinDH(ur5.get_current_joints());
+g_error = gdesired - ur5FwdKin(ur5.get_current_joints());
 pos_error = g_error(1:3, 4) * 100;
 finalerr = norm(pos_error);
