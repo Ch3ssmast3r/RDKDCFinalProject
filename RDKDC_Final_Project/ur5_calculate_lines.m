@@ -90,18 +90,18 @@ function frames = ur5_calculate_lines(gstart,gfinish)
     g4 = [R34,v4;0,0,0,1];
 
     
-    %plot the proposed points and ask if the user likes them
-    figure (1)
-    hold on
-    plotp3(v1,'b')
-    plotp3(v2,'b')
-    plotp3(v3,'b')
-    plotp3(v4,'b')
-    plotp3(v1pen(1:3),'r')
-    plotp3(v4pen(1:3),'r')
-    xlim([.5 1.5])
-    ylim([0 1])
-    hold off
+    %plot is for troubleshooting purposes.
+    % figure (1)
+    % hold on
+    % plotp3(v1,'b')
+    % plotp3(v2,'b')
+    % plotp3(v3,'b')
+    % plotp3(v4,'b')
+    % plotp3(v1pen(1:3),'r')
+    % plotp3(v4pen(1:3),'r')
+    % xlim([.5 1.5])
+    % ylim([0 1])
+    % hold off
     
     accept = input('Is this the desired position? Input 1 for YES, 0 for NO. ');
     if accept ~= 1 %check whether desired position was rejected.
