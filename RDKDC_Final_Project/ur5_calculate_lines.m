@@ -11,6 +11,10 @@ function frames = ur5_calculate_lines(gstart,gfinish)
     
     %we'll need this vector
     e3 = [0;0;1];
+
+    %if an error occurs, the 4 frames will be set to the starting config.
+    starting_config = [0.8996; -1.7011; 2.4081; -2.2778; -1.5627; 0.1232];
+    gerror = ur5FwdKinDH(starting_config);
     
     %Go to this starting configuration in RPY form:
     %Rx = -180
@@ -18,8 +22,16 @@ function frames = ur5_calculate_lines(gstart,gfinish)
     %Rz = 135
     %the order is Rzyx
     
-    R = ROTZ(3*pi/4 + pi)*ROTY(0)*ROTX(-pi);
+    % R = ROTZ(3*pi/4)*ROTY(0)*ROTX(-pi);
     
+    %JUST KIDDING. The orientation of the first trained point will be used
+    %for frames 1 and 2. The orientation of the second trained point will
+    %be used for frames 3 and 4. 
+
+    %extract rotation matrices
+    R12 = gstart(1:3,1:3);
+    R34 = gfinish(1:3,1:3);
+
     %extract the vectors from the homogeneous frames
     v1 = gstart(1:3,4); 
     v4 = gfinish(1:3,4);
@@ -39,11 +51,11 @@ function frames = ur5_calculate_lines(gstart,gfinish)
     %make sure that points 1 and 4 aren't the same. If so, break the
     %function.
     if norm(v14)< .01 %threshold set to 1cm
-        disp('Error - Start and end positions are too close');
-        g1 = NaN(4);
-        g2 = NaN(4);
-        g3 = NaN(4);
-        g4 = NaN(4);
+        disp('Error - Start and end positions are too close. Moving to starting configuration.');
+        g1 = gerror(4);
+        g2 = gerror(4);
+        g3 = gerror(4);
+        g4 = gerror(4);
         
         frames(:,:,1) = g1;
         frames(:,:,2) = g2;
@@ -64,12 +76,12 @@ function frames = ur5_calculate_lines(gstart,gfinish)
     v3 = v4_xy + (v12)*5/100;
     
     %output the frames g2 and g3, using the orientation expressed in g4.
-    g2 = [R,v2;0,0,0,1];
-    g3 = [R,v3;0,0,0,1];
+    g2 = [R12,v2;0,0,0,1];
+    g3 = [R34,v3;0,0,0,1];
     
     %frames g1 and g4 will be re-expressed with the average z height.
-    g1 = [R,v1_xy;0,0,0,1];
-    g4 = [R,v4_xy;0,0,0,1];
+    g1 = [R12,v1_xy;0,0,0,1];
+    g4 = [R34,v4_xy;0,0,0,1];
     
     %plot the proposed points and ask if the user likes them
     figure (1)
@@ -81,22 +93,17 @@ function frames = ur5_calculate_lines(gstart,gfinish)
     hold off
     
     accept = input('Is this the desired position? Input 1 for YES, 0 for NO. ');
-    if accept == 1
-        frames(:,:,1) = g1;
-        frames(:,:,2) = g2;
-        frames(:,:,3) = g3;
-        frames(:,:,4) = g4;
-    else 
-        disp('Error - User denied the proposed positions.');
-        g1 = NaN(4);
-        g2 = NaN(4);
-        g3 = NaN(4);
-        g4 = NaN(4);
-        
-        frames(:,:,1) = g1;
-        frames(:,:,2) = g2;
-        frames(:,:,3) = g3;
-        frames(:,:,4) = g4;
+    if accept ~= 1 %check whether desired position was rejected.
+        disp('Error - User denied the proposed positions. Moving to starting configuration.');
+        g1 = gerror;
+        g2 = gerror;
+        g3 = gerror;
+        g4 = gerror;
     end
-        close all
+    
+    frames(:,:,1) = g1;
+    frames(:,:,2) = g2;
+    frames(:,:,3) = g3;
+    frames(:,:,4) = g4;
+    close all
 end
