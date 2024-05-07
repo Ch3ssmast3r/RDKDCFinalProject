@@ -40,5 +40,7 @@ t56 = DH(a6, alpha6, d6, thetas(6));
 R67 = eye(3);
 p67 = [0; -49/1000; 115/1000];
 t67 = [R67, p67; 0, 0, 0, 1];
-gst = t01 * t12 * t23 * t34 * t45 * t56 * t67;
+% gst = t01 * t12 * t23 * t34 * t45 * t56 * t67;
+%No one likes you, t67
+gst = t01 * t12 * t23 * t34 * t45 * t56;
 end

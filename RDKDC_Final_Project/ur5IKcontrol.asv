@@ -54,7 +54,8 @@ for i = 2:length(s)
     %find the best theta by comparing with previous joint angles. Choose the closest 
     %More - avoid solutions with singulaties or joint (velocity) limits
     [min_err, index] = min(vecnorm(thetas(:,:,i) - q(:,i-1)));
-
+    disp("possible solutions: "); thetas(:,:,i)
+    disp("Joint angles: ")
     q(:,i) = thetas(:,index,i);
     
     %move frame
