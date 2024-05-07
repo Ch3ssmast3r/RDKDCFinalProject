@@ -6,7 +6,7 @@ function finalerr = ur5IKcontrol(gdesired, ur5)
 
 %get initial pose
 q_initial = ur5.get_current_joints; %current joint angles
-g_initial = ur5FwdKin(q_initial);
+g_initial = ur5FwdKinDH(q_initial);
 
 %% generate a straight line Cartesian path
 
@@ -25,7 +25,7 @@ R_initial = g_initial(1:3,1:3);
 p_final = gdesired(1:3,4);
 R_final = gdesired(1:3,1:3);
 
-deltaT = 0.1; %timestep
+deltaT = 0.025; %timestep
 s = 0:deltaT:1; %can make it smoother using cubic or fifth order polynomials
 
 p_s = p_initial + s.*(p_final-p_initial); %translation path
@@ -62,10 +62,10 @@ for i = 2:length(s)
     fwdKinToolFrame.move_frame('base_link', g_s(:,:,i));
 
     %move ur5
-    ur5.move_joints(q(:,i), 2);
-    pause(2)
+    ur5.move_joints(q(:,i), 0.5);
+    pause(0.5)
 end
 
-g_error = gdesired - ur5FwdKin(ur5.get_current_joints());
+g_error = gdesired - ur5FwdKinDH(ur5.get_current_joints());
 pos_error = g_error(1:3, 4) * 100;
 finalerr = norm(pos_error);
