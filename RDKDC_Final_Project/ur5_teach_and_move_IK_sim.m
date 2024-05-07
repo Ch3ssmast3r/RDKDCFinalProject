@@ -2,7 +2,6 @@
 % Written by Aabhas Jain 
 % edits by James Kaluna
 
-% Doesn't work with ur5FwdKinDH
 
 %% Calculate Robot points
 ur5 = ur5_interface();
@@ -55,8 +54,8 @@ move_to_gst2 = ur5IKcontrol(gst2, ur5)
 disp('moving up');
 up_displacement = zeros(4);
 up_displacement(3, 4) = 0.05;
-ur5FwdKin(ur5.get_current_joints);
-up_frame = ur5FwdKin(ur5.get_current_joints()) + up_displacement;
+ur5FwdKinDH(ur5.get_current_joints);
+up_frame = ur5FwdKinDH(ur5.get_current_joints()) + up_displacement;
 move_to_up_frame = ur5IKcontrol(up_frame, ur5)
 
 disp('moving to next point')
@@ -76,7 +75,7 @@ move_to_gst4 = ur5IKcontrol(gst4, ur5)
 disp('done, moving to starting config');
 up_displacement = zeros(4);
 up_displacement(3, 4) = 0.05;
-up_frame = ur5FwdKin(ur5.get_current_joints()) + up_displacement;
+up_frame = ur5FwdKinDH(ur5.get_current_joints()) + up_displacement;
 move_to_up_frame = ur5IKcontrol(up_frame, ur5)
 
 ur5.move_joints(starting_config, 15);
