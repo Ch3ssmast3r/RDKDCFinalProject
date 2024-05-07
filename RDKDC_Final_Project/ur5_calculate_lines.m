@@ -31,10 +31,12 @@ function frames = ur5_calculate_lines(gstart,gfinish)
     v4 = gfinish(1:3,4);
 
     %v1 and v4 are the points of the TOOL frame when the robot is taught,
-    %but we need v1 and v4 of the PEN TIP frame.
-    v1pen = t67*[v1;1];
-    v4pen = t67*[v4;1];
-    
+    %but we need v1 and v4 of the PEN TIP, expressed in spacial frame.
+
+    %we use the equation vpen = v_tool + R_tool*p67
+    v1pen = v1 + R12*p67;
+    v4pen = v4 + R34*p67;
+
     %To calculate points 2 and 3, we will consider the z-position and
     %configuration of the starting trained point, to guarantee that the
     %pen will stay on the paper.
@@ -89,13 +91,17 @@ function frames = ur5_calculate_lines(gstart,gfinish)
 
     
     %plot the proposed points and ask if the user likes them
-    % figure (1)
-    % hold on
-    % plotp3(v1_xy)
-    % plotp3(v2)
-    % plotp3(v3)
-    % plotp3(v4_xy)
-    % hold off
+    figure (1)
+    hold on
+    plotp3(v1,'b')
+    plotp3(v2,'b')
+    plotp3(v3,'b')
+    plotp3(v4,'b')
+    plotp3(v1pen(1:3),'r')
+    plotp3(v4pen(1:3),'r')
+    xlim([.5 1.5])
+    ylim([0 1])
+    hold off
     
     accept = input('Is this the desired position? Input 1 for YES, 0 for NO. ');
     if accept ~= 1 %check whether desired position was rejected.

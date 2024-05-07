@@ -6,9 +6,6 @@ function frames = ur5_calculate_lines(gstart,gfinish)
     %straight lines. This will then output the frame transformations STILL
     %INCLUDING the pen tip transformation for the points 2 and 3.
     
-    %NECESSARY CHANGES
-    %ask the user to confirm that they like the two selected points
-    
     %we'll need this vector
     e3 = [0;0;1];
 
@@ -34,9 +31,14 @@ function frames = ur5_calculate_lines(gstart,gfinish)
     v4 = gfinish(1:3,4);
 
     %v1 and v4 are the points of the TOOL frame when the robot is taught,
-    %but we need v1 and v4 of the PEN TIP frame.
-    v1pen = t67*[v1;1];
-    v4pen = t67*[v4;1];
+    %but we need v1 and v4 of the PEN TIP, expressed in spacial frame.
+
+    %we use the equation vpen = v_tool + R_tool*p67
+    v1pen
+
+    % %this is wrong.
+    % v1pen = t67*[v1;1];
+    % v4pen = t67*[v4;1];
     
     %To calculate points 2 and 3, we will consider the z-position and
     %configuration of the starting trained point, to guarantee that the
@@ -74,6 +76,10 @@ function frames = ur5_calculate_lines(gstart,gfinish)
     v12 = cross(v14,e3);
     
     %calculate the position of v2 and v3 using the 5cm distance
+    %v2 is calculated wrt v1 because the tool will be translated in
+    %the same orientation as in g1.
+    %v3 is calculated wrt v4 because the tool will be translated in the
+    %same orientation as in g4.
 
     v2 = v1 + (v12)*5/100; %distance is expressed in meters
     v3 = v4 + (v12)*5/100;
@@ -88,13 +94,13 @@ function frames = ur5_calculate_lines(gstart,gfinish)
 
     
     %plot the proposed points and ask if the user likes them
-    figure (1)
-    hold on
-    plotp3(v1_xy)
-    plotp3(v2)
-    plotp3(v3)
-    plotp3(v4_xy)
-    hold off
+    % figure (1)
+    % hold on
+    % plotp3(v1_xy)
+    % plotp3(v2)
+    % plotp3(v3)
+    % plotp3(v4_xy)
+    % hold off
     
     accept = input('Is this the desired position? Input 1 for YES, 0 for NO. ');
     if accept ~= 1 %check whether desired position was rejected.
