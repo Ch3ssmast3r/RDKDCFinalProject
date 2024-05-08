@@ -25,44 +25,34 @@ R_initial = g_initial(1:3,1:3);
 p_final = gdesired(1:3,4);
 R_final = gdesired(1:3,1:3);
 
-deltaT = 0.025; %timestep
-s = 0:deltaT:1; %can make it smoother using cubic or fifth order polynomials
+delta = 0.025; %step
+s = 0:delta:1; %can make it smoother using cubic or fifth order polynomials
 
-p_s = p_initial + s.*(p_final-p_initial); %translation path
-%R_s = R_initial*MatrixExp(MatrixLog(R_initial'*R_final).*s); %rotation
-%path - axis of rotation is constant in the body frame. Needs 'for loop'.
-%No worries now since we keep R constant
-
-%cartesian path in SE(3)
-g_s = zeros(4,4,length(s));
-g_s(:,:,1) = g_initial;
-%g_s(:,:,end) = gdesired;
 
 %% Use Inverse Kinematics to get joint angles and move UR5 to the 'best' solution
-
-thetas = zeros(6, 8, length(s)); %initialize joint angle matrices
 %q = q_initial;
 q = zeros(6, length(s)); %joint angle vectors
 q(:,1) = q_initial; 
 
 for i = 2:length(s)
-    g_s(:,:,i) = [R_final, p_s(:,i); zeros(1,3), 1];
+    p_s = p_initial + s(i).*(p_final-p_initial); %translation path
+    R_s = R_initial * MatrixExp(MatrixLog(R_initial' * R_final) * s(i)); %rotation path
+    g_s = [R_s, p_s; zeros(1,3), 1]; %cartesian path in SE(3)
 
     %use Inverse Kinematics to get the joint angles
-    thetas(:,:,i) = ur5InvKin(g_s(:,:,i));
+    thetas = ur5InvKin(g_s);
 
     %find the best theta by comparing with previous joint angles. Choose the closest 
     %More - avoid solutions with singulaties or joint (velocity) limits
-    [min_err, index] = min(vecnorm(thetas(:,:,i) - q(:,i-1)));
+    [min_err, index] = min(vecnorm(thetas - q(:,i-1)));
 
-    q(:,i) = thetas(:,index,i);
+    q(:,i) = thetas(:,index);
     
     %move frame
     fwdKinToolFrame = tf_frame('base_link', 'fwdKinToolFrame', eye(4));
-    fwdKinToolFrame.move_frame('base_link', g_s(:,:,i));
+    fwdKinToolFrame.move_frame('base_link', g_s);
 
     %move ur5
-    disp(q(:,i))
     ur5.move_joints(q(:,i), 0.5);
     pause(0.5)
 end
