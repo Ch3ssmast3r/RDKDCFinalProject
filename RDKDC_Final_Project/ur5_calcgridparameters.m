@@ -47,4 +47,9 @@ function [x,y,L,gOrigin] = ur5_calcgridparameters(gstart,gfinish)
     %about the z axis. 
     x = ROTZ(-pi/4)*vcorner;
     y = ROTZ(pi/4)*vcorner;
+
+    if L < 75/1000 %Set mininum size for grid
+        error_message = "ERROR - Grid is too small. Try again.";
+        assert(false, 'MyException:EndOK', error_message);
+    end
 end
