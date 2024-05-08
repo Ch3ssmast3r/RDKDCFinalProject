@@ -4,17 +4,20 @@
 % Math by Andrew Palacio
 
 % Inputs:
+% v0: bottom left corner of box
+% x: x basis vector, may be rotated
+% y: y basis veector, may be rotated
 % l: length of 1 side of the bounding box
-% v1: first corner of the box 
-% v2: second corner of the box
+% 
 
 % Purpose:
-% calculates the list of points needed to draw the grid in order 
+% calculates the list of points that are centered at each grid square 
 % Outputs:
 % list of points: x,y,z 
 function grid = calc_grid(v0, x, y, l)
     up_amount = 2/100; % 2cm
     v_up = [0;0;up_amount];
+
     %v1
     grid(:, 1) = v0 + (l/3)*x + v_up;
     grid(:, 2) = grid(:, 1) - v_up;

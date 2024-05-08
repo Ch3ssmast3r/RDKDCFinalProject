@@ -9,7 +9,7 @@ control_method = 1;
 
 % only moving to start configuration if we are not near it. 
 if (norm(ur5.get_current_joints() - starting_config) > 0.1)
-    ur5.switch_to_ros_control();
+    %ur5.switch_to_ros_control();
     disp('Moving to starting_config');
     ur5.move_joints(starting_config, 15);
     pause(15)
@@ -25,8 +25,10 @@ gst2 = [0 -1 0 0.32;
         0 0 -1 0.11;
         0 0 0 1];
 ur5.switch_to_pendant_control();
-frames = ur5_teach_points(ur5);
-ur5.switch_to_ros_control();
+%frames = ur5_teach_points(ur5);
+frames(:,:,1) = gst1;
+frames(:,:,2) = gst2;
+%ur5.switch_to_ros_control();
 [x,y, l, g0] = ur5_calcgridparameters(frames(:,:,1), frames(:,:,2));
 grid = calc_grid(g0(1:3, 4), x, y, l);
 disp('moving up');
@@ -37,7 +39,17 @@ up_frame = ur5FwdKinDH(ur5.get_current_joints()) + up_displacement;
 move_to_up_frame = ur5RRcontrolSmooth(up_frame, ur5);
 
 draw_list(g0, grid, ur5);
+centers = calc_centers(g0(1:3,4), x, y, l);
+x0_size = calc_shape_size(l);
+for i = 1:9
+    circle = calc_circle(centers(:,i), x0_size);
+    draw_list(g0, circle, ur5);
+    cross = calc_cross(centers(:,i), x0_size, x, y);
+    draw_list(g0, cross, ur5);
+end
 disp('Program done!');
+
+
 % 
 % % 3. put the pen on the paper. 
 % gst2 = gst1;
