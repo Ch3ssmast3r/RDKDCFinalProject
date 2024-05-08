@@ -19,7 +19,7 @@
 
 %So far, the simulation worked at a bare minimum by fixing K at 55.
 
-function finalerr = ur5TJcontrol(gdesired, K, ur5)
+function finalerr = ur5TJcontrol(gdesired, ur5)
 k_min = 20;
 k_max = 75;
 K = 45;

@@ -16,7 +16,7 @@
 % finalerr: this should be -1 if there is a failure. if there is no
 % failure then it should be the final positional error in cm.
 
-function finalerr = ur5RRcontrol(gdesired, K, ur5)
+function finalerr = ur5RRcontrol(gdesired, ur5)
 k_max = 15;
 T_step = 0.05;
 v_abs_error = 0.5 / 100;

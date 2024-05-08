@@ -15,7 +15,7 @@ end
 ur5.switch_to_pendant_control();
 frames = ur5_teach_points(ur5);
 % frames(:,:,1) = ur5FwdKinDHDH(starting_confi);
-% frames(:,:,2) = ur5FwdKinDHDH(end_config);
+% frames(:,:,2) = ur5Fwd    KinDHDH(end_config);
 % second compute all of the target frames (4 frames)
 target_frames = ur5_calculate_lines(frames(:,:,1), frames(:,:, 2));
 
