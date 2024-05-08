@@ -62,6 +62,7 @@ for i = 2:length(s)
     fwdKinToolFrame.move_frame('base_link', g_s(:,:,i));
 
     %move ur5
+    disp(q(:,i))
     ur5.move_joints(q(:,i), 0.5);
     pause(0.5)
 end

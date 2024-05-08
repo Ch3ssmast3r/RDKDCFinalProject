@@ -31,50 +31,50 @@ up_displacement = zeros(4);
 up_displacement(3, 4) = 0.05;
 ur5FwdKinDH(ur5.get_current_joints);
 up_frame = ur5FwdKinDH(ur5.get_current_joints()) + up_displacement;
-move_to_up_frame = ur5TJcontrol(up_frame, K, ur5);
+move_to_up_frame = ur5RRcontrol(up_frame, K, ur5);
 
 disp('moving to start location');
 up_displacement = zeros(4);
 up_displacement(3, 4) = 0.05;
 up_frame = gst1 + up_displacement;
-move_to_up_frame = ur5TJcontrol(up_frame, K, ur5);
+move_to_up_frame = ur5RRcontrol(up_frame, K, ur5);
 
 disp('Moving to gst1');
 pen_frame = tf_frame('base_link', 'pen_frame', eye(4));
 pen_frame.move_frame('base_link', gst1);
-move_to_gst1 = ur5TJcontrol(gst1, K, ur5)
+move_to_gst1 = ur5RRcontrol(gst1, K, ur5)
 
 disp('Moving to gst2');
 pen_frame = tf_frame('base_link', 'pen_frame', eye(4));
 pen_frame.move_frame('base_link', gst2);
-move_to_gst2 = ur5TJcontrol(gst2, K, ur5)
+move_to_gst2 = ur5RRcontrol(gst2, K, ur5)
 
 disp('moving up');
 up_displacement = zeros(4);
 up_displacement(3, 4) = 0.05;
 ur5FwdKinDH(ur5.get_current_joints);
 up_frame = ur5FwdKinDH(ur5.get_current_joints()) + up_displacement;
-move_to_up_frame = ur5TJcontrol(up_frame, K, ur5);
+move_to_up_frame = ur5RRcontrol(up_frame, K, ur5);
 
 disp('moving to next point')
 next_frame = target_frames(:,:,3);
 next_frame(3, 4) = up_frame(3,4);
-move_to_next_frame = ur5TJcontrol(next_frame, K, ur5);
+move_to_next_frame = ur5RRcontrol(next_frame, K, ur5);
  
 disp('Moving to gst3');
 pen_frame = tf_frame('base_link', 'pen_frame', eye(4));
 pen_frame.move_frame('base_link', gst3);
-move_to_gst3 = ur5TJcontrol(gst3, K, ur5)
+move_to_gst3 = ur5RRcontrol(gst3, K, ur5)
 disp('Moving to gst4');
 pen_frame = tf_frame('base_link', 'pen_frame', eye(4));
 pen_frame.move_frame('base_link', gst4);
-move_to_gst4 = ur5TJcontrol(gst4, K, ur5)
+move_to_gst4 = ur5RRcontrol(gst4, K, ur5)
 
 disp('done, moving to starting config');
 up_displacement = zeros(4);
 up_displacement(3, 4) = 0.05;
 up_frame = ur5FwdKinDH(ur5.get_current_joints()) + up_displacement;
-move_to_up_frame = ur5TJcontrol(up_frame, K, ur5);
+move_to_up_frame = ur5RRcontrol(up_frame, K, ur5);
 
 ur5.move_joints(starting_config, 15);
 pause(15);

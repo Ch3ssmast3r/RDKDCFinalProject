@@ -23,8 +23,8 @@ function frames = ur5_calculate_lines(gstart,gfinish)
     %be used for frames 3 and 4. 
 
     %extract rotation matrices for the starting configuration.
-    R12 = gstart(1:3,1:3);
-    R34 = gfinish(1:3,1:3);
+    R12 = gstart(1:3,1:3); % this is in base -> tool0
+    R34 = gfinish(1:3,1:3); % this in base -> tool0
 
     %extract the vectors from the homogeneous frames
     v1 = gstart(1:3,4); 

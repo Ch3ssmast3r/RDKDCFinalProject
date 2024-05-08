@@ -14,11 +14,11 @@ if (norm(ur5.get_current_joints() - starting_config) > 0.1)
     pause(15)
 end
 % first teach the points we want to go to. 
-gst1 = [0 -1 0 0.2;
+gst1 = [0 -1 0 0.6;
        -1 0 0 0.60;
         0 0 -1 0.05;
         0 0 0 1];
-gst2 = [0 -1 0 0.35;
+gst2 = [0 -1 0 0.7;
         -1 0 0 0.60;
         0 0 -1 0.05;
         0 0 0 1];
@@ -38,7 +38,7 @@ gst4 = target_frames(:,:,4);
 disp('moving to start location');
 up_displacement = zeros(4);
 up_displacement(3, 4) = 0.05;
-up_frame = gst1 + up_displacement;
+up_frame = gst1 + up_displacement
 move_to_up_frame = ur5IKcontrol(up_frame, ur5)
 
 disp('Moving to gst1');
