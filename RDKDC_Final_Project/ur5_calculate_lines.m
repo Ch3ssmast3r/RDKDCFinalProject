@@ -10,9 +10,7 @@ function frames = ur5_calculate_lines(gstart,gfinish)
     e3 = [0;0;1];
 
     %pen tip transformation goes from frame 6 (tool0) to 7 (pen tip).
-    R67 = eye(3);
     p67 = [0; -49/1000; 115/1000];
-    t67 = [R67, p67; 0, 0, 0, 1];
 
     %if an error occurs, the 4 frames will be set to the starting config.
     starting_config = [0.8996; -1.7011; 2.4081; -2.2778; -1.5627; 0.1232];
