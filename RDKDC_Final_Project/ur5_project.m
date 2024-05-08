@@ -2,7 +2,6 @@
 % This is the main project file that allows the user to specify a method of
 % control and set their own start and target locations.
 % Written by Aabhas Jain 
-% Edited by James Kaluna
 
 % Ask user to specify control method
 control_method = ask_control_method();
@@ -13,9 +12,9 @@ ur5 = ur5_interface(); % starting the ur5 interface
 % pre-defined starting configuration - empirically set. 
 starting_config = [0.8996; -1.7011; 2.4081; -2.2778; -1.5627; 0.1232];
 
-ur5.switch_to_ros_control(); % switching to ros control to move
 % only moving to start configuration if we are not near it. 
-if (norm(ur5.get_current_joints() - starting_config) > 0.1)
+if (norm(ur5.get_current_joints() - starting_config) > 0.01)
+    ur5.switch_to_ros_control(); % switching to ros control to move
     disp('Moving to starting_config');
     ur5.move_joints(starting_config, 15);
     pause(15)
@@ -38,7 +37,7 @@ gst4 = target_frames(:,:,4);
 % 1. assume that we are touching the paper, so we move up.
 disp('moving up');
 up_displacement = zeros(4);
-up_displacement(3, 4) = 0.05;
+up_displacement(3, 4) = 0.01;
 ur5FwdKinDH(ur5.get_current_joints);
 up_frame = ur5FwdKinDH(ur5.get_current_joints()) + up_displacement;
 ur5_move_specified_control(up_frame, ur5, control_method);

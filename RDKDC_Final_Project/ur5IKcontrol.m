@@ -25,7 +25,7 @@ R_initial = g_initial(1:3,1:3);
 p_final = gdesired(1:3,4);
 R_final = gdesired(1:3,1:3);
 
-delta = 0.025; %step
+delta = .025; %step
 s = 0:delta:1; %can make it smoother using cubic or fifth order polynomials
 
 
@@ -33,6 +33,7 @@ s = 0:delta:1; %can make it smoother using cubic or fifth order polynomials
 %q = q_initial;
 q = zeros(6, length(s)); %joint angle vectors
 q(:,1) = q_initial; 
+speed_limit = 0.25;
 
 for i = 2:length(s)
     p_s = p_initial + s(i).*(p_final-p_initial); %translation path
@@ -53,8 +54,16 @@ for i = 2:length(s)
     fwdKinToolFrame.move_frame('base_link', g_s);
 
     %move ur5
-    ur5.move_joints(q(:,i), 0.5);
-    pause(0.5)
+
+    % use the speed limit to calculate the minimum time. This calculation
+    % is based off of the one done in ur5_interface. we just set the speed
+    % limit and joint velocity to calculate the shortest time interval, and
+    % add 0.01 for a little breathing room. This is to get the shortest
+    % motions possible. 
+    joint_velocity = q(:,i) - ur5.get_current_joints();
+    time_interval = 0.01 + max(abs(joint_velocity))/speed_limit;
+    ur5.move_joints(q(:,i), time_interval);
+    pause(time_interval+0.05);
 end
 
 g_error = gdesired - ur5FwdKinDH(ur5.get_current_joints());
