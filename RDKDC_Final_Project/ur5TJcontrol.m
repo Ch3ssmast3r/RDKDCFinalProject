@@ -22,12 +22,13 @@
 function finalerr = ur5TJcontrol(gdesired, ur5)
 k_min = 20;
 k_max = 75;
-K = 45;
+K = 25;
 T_step = 0.01;
-v_abs_error = .5 / 100;
-w_abs_error = 1 * pi/180;
+v_abs_error = 1 / 1000;
+w_abs_error = 0.5 * pi/180;
 q_k = ur5.get_current_joints;
 J_bqk = ur5BodyJacobian(q_k);
+speed_limit = 0.25;
 
 xi_error = getXi(FINV(gdesired)*ur5FwdKinDH(q_k));
 v_k = xi_error(1:3);
@@ -46,20 +47,7 @@ while (norm_v_k > v_abs_error || norm_w_k > w_abs_error && ABORT ~= 1)
     norm_v_k = norm(v_k);
     norm_w_k = norm(w_k);
     inv_cond = manipulability(J_bqk, 'invcond');
-    % K_rr = 4/norm(J_bqk\xi_error);
-    term = transpose(J_bqk)*xi_error;
-    % if norm_v_k > .1
-    %     % K = 8/norm_v_k;
-    %     K = 45;
-    % else
-    %     K = 65;
-    % end
-    % K = 100 - 250*norm_v_k; %finding K using a linear function of error
-    % K = 8/norm_v_k;
-    % fprintf('K: %6.2f \n', K);
-    % fprintf('Determinant: %6.4f \n', det(J_bqk))
-    % fprintf('Error: %6.4f \n', norm_v_k);
-    % fprintf('Term: %6.2f \n', term)
+   
     if (K < k_min)
         K = k_min;
         fprintf('K: %6.2f \n', K);
@@ -78,8 +66,15 @@ while (norm_v_k > v_abs_error || norm_w_k > w_abs_error && ABORT ~= 1)
     g_new = ur5FwdKinDH(q_k_new);
     fwdKinToolFrame = tf_frame('base_link', 'fwdKinToolFrame', eye(4));
     fwdKinToolFrame.move_frame('base_link', g_new);
-    ur5.move_joints(q_k_new, 1.25);
-    pause(1.25);
+    % use the speed limit to calculate the minimum time. This calculation
+    % is based off of the one done in ur5_interface. we just set the speed
+    % limit and joint velocity to calculate the shortest time interval, and
+    % add 0.01 for a little breathing room. This is to get the shortest
+    % motions possible. 
+    joint_velocity = q_k_new - q_k;
+    time_interval = 0.1 + max(abs(joint_velocity))/speed_limit;
+    ur5.move_joints(q_k_new, time_interval);
+    pause(time_interval + .05);
 end
 g_error = gdesired - ur5FwdKinDH(ur5.get_current_joints());
 pos_error = g_error(1:3, 4) * 100;

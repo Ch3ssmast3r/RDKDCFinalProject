@@ -26,5 +26,5 @@ function cross = calc_cross(center, l, v1, v2)
     cross(:, 6) = cross(:, 5) - v_up;
     cross(:, 7) = center - leg*v1 + leg*v2;
     cross(:, 8) = cross(:, 7) + v_up;
-    scatter3(cross(1,:), cross(2,:), cross(3,:))
+    %scatter3(cross(1,:), cross(2,:), cross(3,:))
 end

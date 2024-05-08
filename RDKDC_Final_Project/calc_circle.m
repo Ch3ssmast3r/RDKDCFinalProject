@@ -22,5 +22,5 @@ circle(3, :) = center(3);
 initial_point = circle(:, 1) + v_up;
 end_point = circle(:, end) + v_up;
 circle = [initial_point, circle, end_point];
-plot(circle(1,:), circle(2,:));
+% plot(circle(1,:), circle(2,:));
 end

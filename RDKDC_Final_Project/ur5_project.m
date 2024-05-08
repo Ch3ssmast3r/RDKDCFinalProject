@@ -34,10 +34,11 @@ gst2 = target_frames(:,:,2);
 gst3 = target_frames(:,:,3);
 gst4 = target_frames(:,:,4);
 
+tic
 % 1. assume that we are touching the paper, so we move up.
 disp('moving up');
 up_displacement = zeros(4);
-up_displacement(3, 4) = 0.01;
+up_displacement(3, 4) = 0.03;
 ur5FwdKinDH(ur5.get_current_joints);
 up_frame = ur5FwdKinDH(ur5.get_current_joints()) + up_displacement;
 ur5_move_specified_control(up_frame, ur5, control_method);
@@ -89,6 +90,7 @@ up_frame = ur5FwdKinDH(ur5.get_current_joints()) + up_displacement;
 ur5_move_specified_control(up_frame, ur5, control_method);
 
 % 10. move to starting config just to reset
+toc
 ur5.move_joints(starting_config, 15);
 pause(15);
 disp('Program complete!')
