@@ -15,20 +15,29 @@
 function grid = calc_grid(v0, x, y, l)
     up_amount = 2/100; % 2cm
     v_up = [0;0;up_amount];
-    grid(:, 1) = + v_up;
+    %v1
+    grid(:, 1) = v0 + (l/3)*x + v_up;
     grid(:, 2) = grid(:, 1) - v_up;
-    grid(:, 3) = ;
+    %v2
+    grid(:, 3) = v0 + (l/3)*x + l*y;
     grid(:, 4) = grid(:, 3) + v_up;
-    grid(:, 5) =  + v_up;
+    %v3
+    grid(:, 5) = v0 + (2*l/3)*x + l*y + v_up;
     grid(:, 6) = grid(:, 5) - v_up;
-    grid(:, 7) = ;
+    %v4
+    grid(:, 7) = v0 + (2*l/3)*x;
     grid(:, 8) = grid(:, 7) + v_up;
-    grid(:, 9) = + v_up;
+    %v5
+    grid(:, 9) = v0 + l*x + (l/3)*y + v_up;
     grid(:, 10) = grid(:, 9) - v_up;
-    grid(:, 11) = ;
-    grid(:, 12) = grid(:, 12) + v_up;
-    grid(:, 13) =  + v_up;
+    %v6
+    grid(:, 11) = v0 + (l/3)*y;
+    grid(:, 12) = grid(:, 11) + v_up;
+    %v7
+    grid(:, 13) = v0 + (2*l/3)*y + v_up;
     grid(:, 14) = grid(:, 13) - v_up;
-    grid(:, 15) = ;
-    grid(:, 16) = grid(:, 16) + v_up;
+    %v8
+    grid(:, 15) = v0 + l*x + (2*l/3)*y;
+    grid(:, 16) = grid(:, 15) + v_up;
+    %plot3(grid(1, :), grid(2, :), grid(3,:));
 end 
