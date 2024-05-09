@@ -54,7 +54,6 @@ for i = 2:length(s)
     fwdKinToolFrame.move_frame('base_link', g_s);
 
     %move ur5
-
     % use the speed limit to calculate the minimum time. This calculation
     % is based off of the one done in ur5_interface. we just set the speed
     % limit and joint velocity to calculate the shortest time interval, and
