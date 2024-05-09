@@ -20,12 +20,10 @@
 %So far, the simulation worked at a bare minimum by fixing K at 55.
 
 function finalerr = ur5TJcontrol(gdesired, ur5)
-k_min = 20;
-k_max = 75;
-K = 25;
+K = 15;
 T_step = 0.01;
-v_abs_error = 1 / 1000;
-w_abs_error = 0.5 * pi/180;
+v_abs_error = 3 / 1000; % mm
+w_abs_error = 0.5 * pi/180; % degrees
 q_k = ur5.get_current_joints;
 J_bqk = ur5BodyJacobian(q_k);
 speed_limit = 0.25;
@@ -47,16 +45,6 @@ while (norm_v_k > v_abs_error || norm_w_k > w_abs_error && ABORT ~= 1)
     norm_v_k = norm(v_k);
     norm_w_k = norm(w_k);
     inv_cond = manipulability(J_bqk, 'invcond');
-   
-    if (K < k_min)
-        K = k_min;
-        fprintf('K: %6.2f \n', K);
-    end
-    if (K > k_max) 
-        K = k_max;
-        fprintf('K: %6.2f \n', K);
-    end
-
 
     if (inv_cond < 0.002)
         ABORT = 1;
