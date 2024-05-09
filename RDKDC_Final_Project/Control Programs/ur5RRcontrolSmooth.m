@@ -23,7 +23,6 @@ v_abs_error = 1 / 1000;
 w_abs_error = 0.5 * pi/180;
 speed_limit = 0.25;
 q_k = ur5.get_current_joints;
-J_bqk = ur5BodyJacobian(q_k);
 
 xi_error = getXi(FINV(gdesired)*ur5FwdKinDH(q_k));
 v_k = xi_error(1:3);
